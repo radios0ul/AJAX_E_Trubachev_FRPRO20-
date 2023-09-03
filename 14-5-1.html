@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Document</title>
+</head>
+
+<body>
+   <input type="number" class="inp1">
+   <input type="number" class="inp2">
+   <button class="btn">SUBMIT</button>
+   <div class="result-div"></div>
+   <script>
+
+      const resultNode = document.querySelector('.result-div');
+      const btnNode = document.querySelector('.btn');
+
+      //при клике проверяем числа и диапазон. Если попадают, формируем URL
+      //и вызываем функцию, которая делает fetch-запрос по сформированному URL
+
+      btnNode.addEventListener('click', async () => {
+
+         const num1 = document.querySelector('.inp1').value;
+         const num2 = document.querySelector('.inp2').value;
+         console.log(num1, num2);
+         if ((((num1 < 100) || (num1 > 300)) || ((num1 - Math.trunc(num1))) != 0) || (((num2 < 100) || (num2 > 300)) || ((num2 - Math.trunc(num2))) != 0)) {
+            resultNode.innerHTML = 'одно из чисел вне диапазона от 100 до 300'
+         } else {
+            let resultUrl = `https://dummyimage.com/${num1}x${num2}/`;
+            // console.log(resultUrl);
+            await doReqest(resultUrl);
+         }
+      })
+
+      // функция, которая делает fetch-запрос по сформированному URL
+      function doReqest(resultUrl) {
+         fetch(resultUrl)
+            .then((response) => {
+
+               let picBlock =
+                  `
+                <div class="pict">
+               <img src="${resultUrl}" class="image"/>
+              </div>
+                `
+               // console.log(picBlock);
+               resultNode.innerHTML = picBlock;
+            })
+            .catch(() => { console.log('error') })
+      }
+
+   </script>
+</body>
+
+</html>

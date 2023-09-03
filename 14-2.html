@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Document</title>
+</head>
+
+<body>
+   <input type="number" class="inp">
+   <button class="btn">GO!</button>
+   <div class="result-div"></div>
+   <script>
+
+      const inputNode = document.querySelector('.inp');
+      const resultNode = document.querySelector('.result-div');
+      const btnNode = document.querySelector('.btn');
+      let arrayFromParsedJson;
+      let picBlock;
+      let pics = '';
+
+      //при клике проверяем число и диапазон. Если попадает, формируем URL
+      //и вызываем функцию, которая делает запрос по сформированному URL,
+      //парсит полученный JSON и передаёт его в функцию, добавляющую
+      //картинки в верстку
+
+      btnNode.addEventListener('click', () => {
+
+         const num = document.querySelector('.inp').value;
+         //console.log(num);
+         if (((num <= 0) || (num >= 11)) || ((num - Math.trunc(num))) != 0) {
+            resultNode.innerHTML = 'число вне диапазона от 1 до 10'
+         } else {
+            let resultUrl = `https://jsonplaceholder.typicode.com/photos?_limit=${num}`;
+            doReqest(resultUrl)
+         }
+      })
+
+      // Функция, которая добавляет картинки в верстку
+      function addPics() {
+
+         arrayFromParsedJson.forEach(item => {
+            picBlock =
+               `
+               <div class="pict">
+              <img src="${item.url}" class="card-image"/>
+             </div>
+               `
+            pics = pics + picBlock;
+         })
+         // console.log(picBlock);
+         // console.log(pics);
+         resultNode.innerHTML = pics;
+      }
+
+      //функция, реализующая запрос - принимает как аргументы url, который мы сами формируем
+      //из полученного числа, и функцию, подставляющую картинки в html
+      // result - массив, полученный в результате парсинга полученного json
+      function doReqest(url) {
+
+         let xhr = new XMLHttpRequest();
+         xhr.open('GET', url, true);
+
+         xhr.onload = function () {
+            if (xhr.status != 200) {
+               console.log('Статус ответа: ', xhr.status);
+            } else {
+               arrayFromParsedJson = JSON.parse(xhr.response);
+               console.log('request ok');
+               console.log(arrayFromParsedJson);
+               addPics();
+            }
+         }
+
+         xhr.onerror = function () {
+            console.log('Ошибка! Статус ответа: ', xhr.status);
+         };
+
+         xhr.send();
+      }
+
+   </script>
+</body>
+
+</html>

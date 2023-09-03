@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Document</title>
+</head>
+
+<body>
+   <input type="number" class="inp1" placeholder="Номер страницы">
+   <input type="number" class="inp2" placeholder="лимит">
+   <button class="btn">ЗАПРОС</button>
+   <div class="result-div"></div>
+   <script>
+
+      const resultNode = document.querySelector('.result-div');
+      const btnNode = document.querySelector('.btn');
+
+      //записываем в результирующий див картинки с предыдущего запроса
+
+      let lastPics = localStorage.getItem('lastPics');
+      resultNode.innerHTML = lastPics;
+      console.log('lastPics', lastPics);
+
+      //при клике проверяем, попадают ли числа в диапазон. Если попадают, формируем URL
+      //и вызываем функцию, которая делает fetch-запрос по сформированному URL
+
+      btnNode.addEventListener('click', () => {
+         const num1 = document.querySelector('.inp1').value;
+         const num2 = document.querySelector('.inp2').value;
+         console.log(num1, num2);
+         let rangeChecker1 = true;
+         let rangeChecker2 = true;
+         let resArray;
+
+         //проверка диапазона
+         if (((num1 <= 0) || (num1 >= 11)) || ((num1 - Math.trunc(num1))) != 0) {
+            rangeChecker1 = false;
+         };
+
+         if (((num2 <= 0) || (num2 >= 11)) || ((num2 - Math.trunc(num2))) != 0) {
+            rangeChecker2 = false;
+         };
+
+         console.log(rangeChecker1, rangeChecker2);
+
+         if ((rangeChecker1 == false) && (rangeChecker2 == false)) {
+            resultNode.innerHTML = 'Номер страницы и лимит вне диапазона от 1 до 10';
+         } else if ((rangeChecker1 == true) && (rangeChecker2 == false)) {
+            resultNode.innerHTML = 'Лимит вне диапазона от 1 до 10';
+         }
+         else if ((rangeChecker2 == true) && (rangeChecker1 == false)) {
+            resultNode.innerHTML = 'Номер страницы вне диапазона от 1 до 10';
+         } else {
+            let resultUrl = `https://jsonplaceholder.typicode.com/photos?_page=${num1}&_limit=${num2}`;
+            console.log(resultUrl);
+
+            addPics(resultUrl);
+
+         }
+      })
+
+      //функция, осуществляющая запрос и запись картинок в див
+      async function addPics(resultUrl) {
+
+         let resp = await fetch(resultUrl);
+         console.log('resp', resp);
+         const result = await resp.json();
+         console.log('result', result);
+
+         let pics = '';
+
+         result.forEach(item => {
+            let picBlock =
+               `
+                            <div class="pict">
+                            <img src="${item.url}" class="card-image"/>
+                            </div>
+                            `
+            pics = pics + picBlock;
+            console.log(item.url)
+         })
+
+         resultNode.innerHTML = pics;
+         //записываем в локалсторадж содержимое дива
+         localStorage.setItem('lastPics', pics);
+      }
+   </script>
+</body>
+
+</html>
