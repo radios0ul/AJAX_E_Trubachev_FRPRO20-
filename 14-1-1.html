@@ -44,21 +44,20 @@
 
       const xmlDOM = parser.parseFromString(xmlString, "text/xml");
       const students = xmlDOM.querySelectorAll("student");
-      const studentsAmount = students.length;
 
       let resultObject = new Array;
+      let i = 0;
 
-      for (let i = 0; i < (studentsAmount); i = i + 1) {
+      students.forEach(item => {
 
-         let result = {
-            name: `${students[i].querySelector("first").textContent} ${students[i].querySelector("second").textContent}`,
-            age: parseInt(students[i].querySelector("age").textContent),
-            prof: students[i].querySelector("prof").textContent,
-            lang: students[i].querySelector("name").getAttribute("lang")
+         resultObject[i] = {
+            name: `${item.querySelector("first").textContent} ${item.querySelector("second").textContent}`,
+            age: parseInt(item.querySelector("age").textContent),
+            prof: item.querySelector("prof").textContent,
+            lang: item.querySelector("name").getAttribute("lang")
          }
-
-         resultObject[i] = result;
-      }
+         i++;
+      })
 
       console.log(resultObject);
 
