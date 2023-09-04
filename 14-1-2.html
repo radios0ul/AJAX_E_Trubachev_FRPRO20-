@@ -22,24 +22,29 @@
     "name": "Vova",
     "age": "60",
     "prof": "pilot"
+   },
+   {
+    "name": "Arkasha",
+    "age": "41",
+    "prof": "alcoholic"
    }
   ]
  }
 `;
 
       const data = JSON.parse(jsonString);
-      console.log('data', data);
 
+      let resultObject = new Array;
+      let i = 0;
 
-      const student1 = data.list[0];
-      const student2 = data.list[1];
+      data.list.forEach(item => {
 
-      const lists = {
-         list: [student1, student2]
+         resultObject[i] = item;
+         i++;
 
-      }
+      })
 
-      console.log(lists)
+      console.log('list', resultObject);
 
    </script>
 </body>
